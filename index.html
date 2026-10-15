@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aventura Kids Perú - Juegos Educativos con Imágenes y Retos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 55%, #dcfce7 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .font-kid {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Tarjetas y Botones 3D Infantil */
+    .toy-card {
+      background: #ffffff;
+      border: 4px solid #e2e8f0;
+      box-shadow: 0 10px 0 #cbd5e1, 0 15px 25px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .toy-btn {
+      transition: all 0.12s ease;
+      transform: translateY(0);
+    }
+    .toy-btn-blue {
+      background: #0ea5e9;
+      border: 3px solid #38bdf8;
+      box-shadow: 0 7px 0 #0284c7;
+      color: white;
+    }
+    .toy-btn-green {
+      background: #22c55e;
+      border: 3px solid #4ade80;
+      box-shadow: 0 7px 0 #15803d;
+      color: white;
+    }
+    .toy-btn-yellow {
+      background: #facc15;
+      border: 3px solid #fde047;
+      box-shadow: 0 7px 0 #ca8a04;
+      color: #422006;
+    }
+    .toy-btn-pink {
+      background: #ec4899;
+      border: 3px solid #f472b6;
+      box-shadow: 0 7px 0 #be185d;
+      color: white;
+    }
+    .toy-btn-purple {
+      background: #8b5cf6;
+      border: 3px solid #a78bfa;
+      box-shadow: 0 7px 0 #6d28d9;
+      color: white;
+    }
+    .toy-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.3) !important;
+    }
+
+    @keyframes bounceSlow {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.03); }
+    }
+    .kid-bounce {
+      animation: bounceSlow 2.6s ease-in-out infinite;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.88); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pop-in {
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .teacher-talking {
+      animation: pulseTeacher 1.2s infinite;
+    }
+    @keyframes pulseTeacher {
+      0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
+      70% { box-shadow: 0 0 0 18px rgba(236, 72, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+    }
+
+    .golden-ticket {
+      background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #fde047 100%);
+      border: 4px dashed #b45309;
+      box-shadow: 0 10px 0 #d97706;
+    }
+
+    /* Marco de Imagen Histórica / Cuento */
+    .story-image-frame {
+      border: 6px solid #ffffff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18), 0 0 0 4px #38bdf8;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: #0f172a;
+    }
+  </style>
+</head>
+<body class="pb-16 select-none">
+
+  <!-- BARRA SUPERIOR -->
+  <header class="bg-white/95 border-b-4 border-sky-300 sticky top-0 z-40 px-4 py-3 shadow-sm">
+    <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-amber-400 border-2 border-amber-500 flex items-center justify-center text-3xl shadow">
+          🦙
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-sky-700 leading-none">Aventura Kids Perú</h1>
+          <p class="text-xs font-extrabold text-slate-500 mt-0.5" id="headerPlayerName">¡Elige tu personaje para jugar!</p>
+        </div>
+      </div>
+
+      <!-- Indicadores -->
+      <div id="topStatsBar" class="hidden flex flex-wrap items-center gap-3">
+        <div class="bg-amber-100 border-2 border-amber-400 px-4 py-1.5 rounded-2xl flex items-center gap-2">
+          <span class="text-2xl">🪙</span>
+          <div>
+            <span class="text-xs font-bold text-amber-800 block leading-none">MIS PUNTOS</span>
+            <span id="uiPoints" class="text-xl font-extrabold text-amber-900">0</span>
+          </div>
+        </div>
+
+        <div class="bg-sky-100 border-2 border-sky-400 px-4 py-1.5 rounded-2xl flex items-center gap-2">
+          <span class="text-2xl">⭐</span>
+          <div>
+            <span class="text-xs font-bold text-sky-800 block leading-none">NIVELES</span>
+            <span id="uiStars" class="text-xl font-extrabold text-sky-900">0</span>
+          </div>
+        </div>
+
+        <div class="bg-emerald-100 border-2 border-emerald-400 px-4 py-1.5 rounded-2xl flex items-center gap-2">
+          <span class="text-2xl">🏅</span>
+          <div>
+            <span class="text-xs font-bold text-emerald-800 block leading-none">MI NOTA</span>
+            <span id="uiGrade" class="text-xl font-extrabold text-emerald-900">20</span>
+          </div>
+        </div>
+
+        <button onclick="goHomeProfiles()" class="toy-btn toy-btn-purple px-4 py-2.5 rounded-2xl font-bold text-sm">
+          👦🏻👧🏻 Cambiar Niño
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PROFESORA GUÍA CON VOZ -->
+  <div class="max-w-5xl mx-auto px-4 mt-4">
+    <div class="bg-white rounded-3xl p-4 border-4 border-pink-300 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <button id="teacherAvatar" onclick="repeatVoice()" class="w-16 h-16 rounded-full bg-pink-500 border-4 border-pink-200 flex items-center justify-center text-4xl shrink-0 shadow-md">
+          👩‍🏫
+        </button>
+        <div>
+          <span class="bg-pink-100 text-pink-700 font-extrabold text-xs px-3 py-0.5 rounded-full uppercase">
+            Profesora Guía (Tócame para escuchar otra vez)
+          </span>
+          <p id="teacherBubbleText" class="text-slate-800 font-extrabold text-base md:text-lg mt-1 leading-snug">
+            ¡Hola! Toca tu tarjeta de 7 años o de 9 años para empezar nuestra aventura.
+          </p>
+        </div>
+      </div>
+      <button onclick="repeatVoice()" class="toy-btn toy-btn-pink px-5 py-3 rounded-2xl font-extrabold text-sm shrink-0">
+        🔊 Escuchar Voz
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="max-w-5xl mx-auto px-4 mt-6">
+
+    <!-- ========================================================= -->
+    <!-- PANTALLA 1: ELEGIR NIÑO (7 AÑOS) O NIÑA (9 AÑOS)          -->
+    <!-- ========================================================= -->
+    <section id="viewProfiles" class="grid md:grid-cols-2 gap-8 py-4">
+      <!-- Niño 7 años -->
+      <div onclick="chooseProfile('boy7')" class="toy-card rounded-3xl p-8 cursor-pointer text-center border-4 border-sky-400 flex flex-col items-center">
+        <div class="w-32 h-32 rounded-full bg-sky-100 border-4 border-sky-300 flex items-center justify-center text-7xl mb-4 kid-bounce">
+          👦🏻
+        </div>
+        <span class="bg-sky-500 text-white font-extrabold text-sm px-4 py-1 rounded-full">PARA 7 AÑOS</span>
+        <h2 class="text-3xl font-bold text-slate-800 mt-3">Juegos de Niño (7 Años)</h2>
+        <p class="text-slate-600 font-bold mt-2 text-base">
+          Retos de compras y vuelto en Soles, Historia del Perú con imágenes reales y Misterios de Lectura.
+        </p>
+        <button class="toy-btn toy-btn-blue w-full py-4 rounded-2xl font-extrabold text-xl mt-6">
+          ▶️ ¡ENTRAR A JUGAR!
+        </button>
+      </div>
+
+      <!-- Niña 9 años -->
+      <div onclick="chooseProfile('girl9')" class="toy-card rounded-3xl p-8 cursor-pointer text-center border-4 border-purple-400 flex flex-col items-center">
+        <div class="w-32 h-32 rounded-full bg-purple-100 border-4 border-purple-300 flex items-center justify-center text-7xl mb-4 kid-bounce">
+          👧🏻
+        </div>
+        <span class="bg-purple-600 text-white font-extrabold text-sm px-4 py-1 rounded-full">PARA 9 AÑOS</span>
+        <h2 class="text-3xl font-bold text-slate-800 mt-3">Juegos de Niña (9 Años)</h2>
+        <p class="text-slate-600 font-bold mt-2 text-base">
+          Ingeniería de multiplicación y presupuesto, Historia del Perú ilustrada y Detectives de Lectura.
+        </p>
+        <button class="toy-btn toy-btn-purple w-full py-4 rounded-2xl font-extrabold text-xl mt-6">
+          ▶️ ¡ENTRAR A JUGAR!
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PANTALLA 2: MENÚ DE CURSOS Y PREMIOS                      -->
+    <!-- ========================================================= -->
+    <section id="viewDashboard" class="hidden space-y-6">
+      <div class="flex flex-wrap gap-4">
+        <button onclick="switchMainTab('courses')" class="toy-btn toy-btn-blue px-6 py-3.5 rounded-2xl font-extrabold text-lg">
+          🎮 Mis 3 Cursos de Juego
+        </button>
+        <button onclick="switchMainTab('rewards')" class="toy-btn toy-btn-yellow px-6 py-3.5 rounded-2xl font-extrabold text-lg flex items-center gap-2">
+          🎫 Reclamar Premios con Papá/Mamá (<span id="badgeTicketCount">0</span>)
+        </button>
+      </div>
+
+      <!-- PESTAÑA CURSOS -->
+      <div id="panelCourses" class="space-y-6">
+        <div class="grid md:grid-cols-3 gap-6">
+          <div onclick="selectSubject('math')" id="cardSub_math" class="toy-card cursor-pointer rounded-3xl p-6 border-4 border-sky-400 text-center">
+            <div class="text-6xl kid-bounce mb-2">🧮</div>
+            <span class="bg-sky-100 text-sky-800 font-extrabold text-xs px-3 py-1 rounded-full">Ganas +10 Puntos 🪙</span>
+            <h3 class="text-2xl font-bold text-slate-800 mt-2">Matemáticas</h3>
+            <p class="text-xs font-bold text-slate-500 mt-1">200 Retos de Pensar y Calcular</p>
+            <div class="mt-4 bg-sky-500 text-white font-extrabold py-2 rounded-xl text-sm">Ver Niveles 👇</div>
+          </div>
+
+          <div onclick="selectSubject('history')" id="cardSub_history" class="toy-card cursor-pointer rounded-3xl p-6 border-4 border-amber-400 text-center">
+            <div class="text-6xl kid-bounce mb-2">🏔️</div>
+            <span class="bg-amber-100 text-amber-900 font-extrabold text-xs px-3 py-1 rounded-full">Ganas +5 Puntos 🪙</span>
+            <h3 class="text-2xl font-bold text-slate-800 mt-2">Historia del Perú</h3>
+            <p class="text-xs font-bold text-slate-500 mt-1">Con Imágenes Reales de la Historia</p>
+            <div class="mt-4 bg-amber-500 text-white font-extrabold py-2 rounded-xl text-sm">Ver Niveles 👇</div>
+          </div>
+
+          <div onclick="selectSubject('reading')" id="cardSub_reading" class="toy-card cursor-pointer rounded-3xl p-6 border-4 border-emerald-400 text-center">
+            <div class="text-6xl kid-bounce mb-2">📖</div>
+            <span class="bg-emerald-100 text-emerald-900 font-extrabold text-xs px-3 py-1 rounded-full">Ganas +5 Puntos 🪙</span>
+            <h3 class="text-2xl font-bold text-slate-800 mt-2">Comprensión Lectora</h3>
+            <p class="text-xs font-bold text-slate-500 mt-1">200 Misterios Ilustrados</p>
+            <div class="mt-4 bg-emerald-500 text-white font-extrabold py-2 rounded-xl text-sm">Ver Niveles 👇</div>
+          </div>
+        </div>
+
+        <!-- MAPA DE 200 NIVELES -->
+        <div class="toy-card rounded-3xl p-6 border-4 border-sky-300">
+          <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 border-slate-100 pb-4 mb-4">
+            <div>
+              <h3 id="levelMapTitle" class="text-2xl font-bold text-slate-800">📍 Toca un Nivel para empezar:</h3>
+              <p class="text-sm font-bold text-slate-500">Primero aprendes con imágenes y voz, y luego resuelves los 2 retos mentales.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="changePage(1, 50)" class="toy-btn toy-btn-blue px-3 py-1.5 rounded-xl font-extrabold text-xs">1 al 50</button>
+              <button onclick="changePage(51, 100)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-xl font-extrabold text-xs">51 al 100</button>
+              <button onclick="changePage(101, 150)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-xl font-extrabold text-xs">101 al 150</button>
+              <button onclick="changePage(151, 200)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-3 py-1.5 rounded-xl font-extrabold">151 al 200</button>
+            </div>
+          </div>
+
+          <div id="levelsButtonsGrid" class="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-10 gap-3 max-h-72 overflow-y-auto p-2"></div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA DE PREMIOS -->
+      <div id="panelRewards" class="hidden space-y-6">
+        <div class="toy-card rounded-3xl p-6 border-4 border-amber-400 bg-amber-50">
+          <h2 class="text-2xl font-bold text-amber-900">🎁 Tienda de Premios de Papá y Mamá</h2>
+          <p class="text-sm font-bold text-amber-800 mt-1">Usa tus puntos 🪙 para sacar un Ticket Dorado y muéstraselo a tus papás.</p>
+          <div id="storeGrid" class="grid sm:grid-cols-3 gap-5 mt-5"></div>
+        </div>
+
+        <div class="toy-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold text-slate-800 mb-4">🎫 Mis Tickets Dorados Ganados:</h3>
+          <div id="ticketsList" class="grid md:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PANTALLA 3: CLASE CON IMÁGENES REALES + RETO DE PENSAR    -->
+    <!-- ========================================================= -->
+    <section id="viewLesson" class="hidden toy-card rounded-3xl p-6 md:p-8 border-4 border-sky-400">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-slate-100 pb-4 mb-6">
+        <div>
+          <span id="lessonBadge" class="bg-amber-400 text-amber-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase">
+            Ganas +10 Puntos 🪙
+          </span>
+          <h2 id="lessonMainTitle" class="text-2xl md:text-3xl font-bold text-slate-800 mt-1">Título</h2>
+        </div>
+        <button onclick="exitLesson()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold px-5 py-2.5 rounded-2xl text-sm">
+          ✖ Salir al Mapa
+        </button>
+      </div>
+
+      <!-- FASE 1: EXPLICACIÓN CON IMÁGENES DE REFERENCIA MIENTRAS HABLA -->
+      <div id="stepStoryBox" class="space-y-6">
+        <div class="flex items-center justify-center gap-3">
+          <div id="dotStep0" class="px-4 py-1.5 rounded-full font-extrabold text-sm bg-sky-500 text-white">Escena 1</div>
+          <div class="text-slate-300 font-bold">➡️</div>
+          <div id="dotStep1" class="px-4 py-1.5 rounded-full font-extrabold text-sm bg-slate-200 text-slate-600">Escena 2</div>
+          <div class="text-slate-300 font-bold">➡️</div>
+          <div id="dotStep2" class="px-4 py-1.5 rounded-full font-extrabold text-sm bg-slate-200 text-slate-600">Escena 3</div>
+        </div>
+
+        <!-- ESCENARIO DE IMAGEN REAL + EXPLICACIÓN CLARA -->
+        <div id="bigPictureStage" class="pop-in bg-gradient-to-b from-sky-50 to-indigo-50 border-4 border-sky-300 rounded-3xl p-6 text-center shadow-inner"></div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+          <button id="btnPrevStep" onclick="prevStoryStep()" class="toy-btn bg-slate-200 text-slate-700 font-extrabold px-6 py-4 rounded-2xl text-lg">
+            ⬅️ Anterior
+          </button>
+
+          <button onclick="repeatVoice()" class="toy-btn toy-btn-pink px-6 py-4 rounded-2xl font-extrabold text-lg">
+            🔊 Volver a Escuchar
+          </button>
+
+          <button id="btnNextStep" onclick="nextStoryStep()" class="toy-btn toy-btn-green px-10 py-4 rounded-2xl font-extrabold text-xl">
+            Siguiente Escena ➡️
+          </button>
+        </div>
+      </div>
+
+      <!-- FASE 2: JUEGO DINÁMICO DE RAZONAMIENTO (SIN DAR LA RESPUESTA SERVIDA) -->
+      <div id="stepGameBox" class="hidden space-y-6">
+        <div class="bg-amber-100 border-2 border-amber-400 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2">
+          <span class="font-extrabold text-amber-950 text-lg" id="gameInstructionTitle">🧠 ¡Reto para Pensar!</span>
+          <div class="flex items-center gap-3">
+            <span id="stageStepIndicator" class="bg-sky-600 text-white font-extrabold px-3 py-1 rounded-full text-xs">
+              Misión Parte 1 de 2
+            </span>
+            <span id="liveGradeBadge" class="bg-emerald-500 text-white font-extrabold px-4 py-1 rounded-full text-sm">
+              Tu Nota: 20 / 20
+            </span>
+          </div>
+        </div>
+
+        <!-- Tablero del Desafío Mental -->
+        <div id="interactivePlayArea" class="bg-sky-50 border-4 border-sky-200 rounded-3xl p-6"></div>
+
+        <!-- Retroalimentación -->
+        <div id="gameFeedbackBanner" class="hidden p-6 rounded-3xl text-center border-4"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. MOTOR DE VOZ DE LA PROFESORA
+    // =========================================================================
+    let femaleVoice = null;
+    let currentSpokenText = "¡Hola! Toca tu tarjeta de 7 años o de 9 años para empezar nuestra aventura.";
+
+    function initVoices() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      const esVoices = voices.filter(v => v.lang.toLowerCase().includes('es'));
+      const preferred = ['sabina', 'helena', 'paulina', 'dalia', 'paloma', 'laura', 'mónica', 'monica', 'google español'];
+      for (let name of preferred) {
+        const found = esVoices.find(v => v.name.toLowerCase().includes(name));
+        if (found) { femaleVoice = found; break; }
+      }
+      if (!femaleVoice && esVoices.length > 0) femaleVoice = esVoices[0];
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = initVoices;
+      initVoices();
+    }
+
+    function speak(text) {
+      currentSpokenText = text;
+      document.getElementById('teacherBubbleText').innerText = text;
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'es-PE';
+      if (femaleVoice) u.voice = femaleVoice;
+      u.rate = 0.93;
+      u.pitch = 1.08;
+
+      const avatar = document.getElementById('teacherAvatar');
+      u.onstart = () => avatar.classList.add('teacher-talking');
+      u.onend = () => avatar.classList.remove('teacher-talking');
+      u.onerror = () => avatar.classList.remove('teacher-talking');
+
+      window.speechSynthesis.speak(u);
+    }
+
+    function repeatVoice() {
+      speak(currentSpokenText);
+    }
+
+    // =========================================================================
+    // 2. GUARDADO DE DATOS Y PERFILES
+    // =========================================================================
+    const SAVE_KEY = 'aventura_kids_peru_v5_images';
+    let appState = {
+      profile: null,
+      subject: 'math',
+      pageRange: [1, 50],
+      players: {
+        boy7: { name: 'Campeón (7 Años)', points: 20, stars: 0, grades: [20], done: {}, tickets: [] },
+        girl9: { name: 'Campeona (9 Años)', points: 20, stars: 0, grades: [20], done: {}, tickets: [] }
+      }
+    };
+
+    function loadProgress() {
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (saved) {
+        try { appState.players = JSON.parse(saved); } catch(e) {}
+      }
+    }
+    function saveProgress() {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(appState.players));
+    }
+
+    // Helper para mostrar imagen real de internet con respaldo ilustrado automático
+    function renderInternetImageCard(imgUrl, altTitle, badgeCaption, gradientBg) {
+      return `
+        <div class="max-w-xl mx-auto my-4">
+          <div class="story-image-frame relative h-60 md:h-72 flex items-center justify-center ${gradientBg}">
+            <img src="${imgUrl}" alt="${altTitle}" 
+                 class="w-full h-full object-cover transition duration-500"
+                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+            <div class="hidden p-6 text-white text-center">
+              <div class="text-5xl mb-2">🇵🇪🏛️✨</div>
+              <div class="text-xl font-extrabold">${altTitle}</div>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-3 text-white font-extrabold text-sm md:text-base">
+              📸 ${badgeCaption}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 3. GENERADOR DE 200 LECCIONES CON IMÁGENES DE INTERNET Y RETOS DE PENSAR
+    // =========================================================================
+    function buildLesson(profile, subject, level) {
+      const is7 = profile === 'boy7';
+
+      // -----------------------------------------------------------------------
+      // CURSO 1: MATEMÁTICAS (+10 PUNTOS)
+      // En la lección le enseña con un ejemplo, y en el juego le pone un PROBLEMA NUEVO SIN DARLE LA RESPUESTA
+      // -----------------------------------------------------------------------
+      if (subject === 'math') {
+        if (is7) {
+          // Ejemplo de la clase
+          const exA = 12 + (level % 7);
+          const exB = 11 + (level % 6);
+          const exSum = exA + exB;
+
+          // Reto Nuevo del Juego (NO le dice el resultado, el niño debe calcular la compra y también el vuelto)
+          const item1Price = 14 + (level % 11);
+          const item2Price = 12 + ((level * 2) % 9);
+          const secretTotalCost = item1Price + item2Price;
+          const billPaid = secretTotalCost + ((level % 4) + 2); // El billete con el que paga el cliente
+          const secretChange = billPaid - secretTotalCost;
+
+          return {
+            id: `math_${level}`,
+            subject: 'math',
+            points: 10,
+            title: `Nivel ${level}: Compras, Sumas y Vuelto en Soles`,
+            slides: [
+              {
+                title: `1. Ejemplo Guiado: ¿Cómo sumamos ${exA} + ${exB}?`,
+                artHTML: renderInternetImageCard(
+                  'https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?auto=format&fit=crop&w=900&q=80',
+                  'Ábaco y Bloques de Matemáticas',
+                  `Ejemplo de la Profesora: Juntamos ${exA} + ${exB}`,
+                  'bg-sky-900'
+                ),
+                shortText: `Para sumar ${exA} + ${exB} en tu mente: primero suma las decenas (${Math.floor(exA/10)*10} + ${Math.floor(exB/10)*10} = ${Math.floor(exA/10)*10 + Math.floor(exB/10)*10}) y luego las unidades (${exA%10} + ${exB%10} = ${(exA%10)+(exB%10)}).`,
+                voiceText: `Observa la imagen. Te enseñaré un secreto para calcular en tu mente sin que nadie te diga la respuesta. Para sumar ${exA} más ${exB}, primero sumamos los grupos de diez, y luego las unidades sueltas. Así descubrimos que da ${exSum}.`
+              },
+              {
+                title: `2. ¿Y cómo calculamos el Vuelto en una tienda?`,
+                artHTML: renderInternetImageCard(
+                  'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=80',
+                  'Comprando en la Tienda',
+                  'Si pagas con más dinero, debes restar para dar el vuelto',
+                  'bg-emerald-900'
+                ),
+                shortText: `Si tu compra sale ${exSum} soles y pagas con ${exSum + 5} soles, ¿cuánto falta de ${exSum} para llegar a ${exSum + 5}? ¡Exacto, 5 soles de vuelto!`,
+                voiceText: `En la vida real, cuando compras algo en la tienda, a veces pagas con un billete más grande. Para saber el vuelto, solo cuentas cuánto le falta al precio total para llegar al billete con el que pagaste.`
+              },
+              {
+                title: `3. ¡Prepárate! En el juego NO te diré la respuesta`,
+                artHTML: `
+                  <div class="my-4 bg-white p-6 rounded-3xl border-4 border-amber-400 max-w-lg mx-auto shadow">
+                    <div class="text-5xl mb-2">🛒 🧠 🪙</div>
+                    <h4 class="text-xl font-extrabold text-slate-800">Tu Reto de Cajero Experto:</h4>
+                    <p class="text-base font-bold text-slate-600 mt-1">
+                      1️⃣ Primero calcularás tú solito cuánto cuestan los 2 juguetes juntos.<br>
+                      2️⃣ Y después calcularás cuánto vuelto debes entregar.
+                    </p>
+                  </div>
+                `,
+                shortText: `¡Ahora te toca pensar a ti! Lee los precios de los juguetes, súmalos en tu mente y cobra en la caja.`,
+                voiceText: `¡Muy atento! En el juego no aparecerá el resultado escrito. Tendrás que mirar el precio de los dos juguetes, sumarlos tú mismo para cobrar, y en la segunda parte dar el vuelto exacto.`
+              }
+            ],
+            gameType: 'smart_cashier_7',
+            item1Name: 'Peluche de Llamita',
+            item1Price: item1Price,
+            item2Name: 'Pelota de Fútbol',
+            item2Price: item2Price,
+            secretTotalCost: secretTotalCost,
+            billPaid: billPaid,
+            secretChange: secretChange
+          };
+        } else {
+          // 9 Años: Ejemplo de multiplicación + Reto de Arquitecta con 2 fases sin soplar la respuesta
+          const exPacks = 3 + (level % 3);
+          const exPerPack = 6 + (level % 4);
+          const exTotal = exPacks * exPerPack;
+
+          // Reto Nuevo del Juego (NO muestra el resultado)
+          const boxesA = 3 + (level % 4);        // ej. 4 cajas
+          const itemsPerBoxA = 7 + (level % 5);  // ej. 8 ladrillos c/u
+          const extraItems = 6 + (level % 9);    // ej. +9 ladrillos extra
+          const secretPart1 = boxesA * itemsPerBoxA;
+          const secretPart2 = secretPart1 + extraItems;
+
+          return {
+            id: `math_${level}`,
+            subject: 'math',
+            points: 10,
+            title: `Nivel ${level}: Multiplicación y Presupuesto de Obra`,
+            slides: [
+              {
+                title: `1. Ejemplo: Multiplicar Grupos Iguales (${exPacks} × ${exPerPack})`,
+                artHTML: renderInternetImageCard(
+                  'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80',
+                  'Geometría y Multiplicación',
+                  `Ejemplo: ${exPacks} cajas con ${exPerPack} piezas cada una = ${exTotal}`,
+                  'bg-purple-900'
+                ),
+                shortText: `Cuando tienes ${exPacks} cajas iguales con ${exPerPack} piezas en cada una, multiplicas ${exPacks} × ${exPerPack} = ${exTotal}.`,
+                voiceText: `Mira la imagen. Cuando un ingeniero recibe ${exPacks} cajas iguales y cada caja trae ${exPerPack} piezas, multiplica ${exPacks} por ${exPerPack} para descubrir que hay ${exTotal} piezas.`
+              },
+              {
+                title: `2. Operaciones Combinadas (Multiplicar y luego Sumar)`,
+                artHTML: renderInternetImageCard(
+                  'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80',
+                  'Planos de Arquitectura',
+                  'Regla de Oro: Primero resuelve las cajas (×) y al final suma las sueltas (+)',
+                  'bg-indigo-900'
+                ),
+                shortText: `Si además de las ${exPacks} cajas (${exTotal} piezas) te entregan 8 piezas sueltas, sumas ${exTotal} + 8 = ${exTotal + 8} piezas totales.`,
+                voiceText: `Recuerda siempre el orden de los arquitectos: primero multiplicas las cajas cerradas, y al resultado le sumas las piezas sueltas que quedaron afuera.`
+              },
+              {
+                title: `3. ¡Reto sin Respuesta Escrita!`,
+                artHTML: `
+                  <div class="my-4 bg-white p-6 rounded-3xl border-4 border-purple-400 max-w-lg mx-auto shadow">
+                    <div class="text-5xl mb-2">🏗️ 📐 🧠</div>
+                    <h4 class="text-xl font-extrabold text-slate-800">Misión de Arquitecta en 2 Pasos:</h4>
+                    <p class="text-base font-bold text-slate-600 mt-1">
+                      La máquina NO te dirá cuántos bloques poner. ¡Tú deberás calcular la multiplicación y luego agregar la reserva!
+                    </p>
+                  </div>
+                `,
+                shortText: `¿Lista para pensar? Calcula en tu mente y carga los bloques exactos en las 2 etapas de la obra.`,
+                voiceText: `Ahora vamos a la obra. La pantalla no te dará la respuesta hecha: tú tendrás que calcular la multiplicación primero y luego sumar los bloques de reserva.`
+              }
+            ],
+            gameType: 'smart_architect_9',
+            boxesA: boxesA,
+            itemsPerBoxA: itemsPerBoxA,
+            extraItems: extraItems,
+            secretPart1: secretPart1,
+            secretPart2: secretPart2
+          };
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // CURSO 2: HISTORIA DEL PERÚ (+5 PUNTOS) - CON IMÁGENES REALES DE INTERNET Y RETO DE 3 ETAPAS
+      // -----------------------------------------------------------------------
+      if (subject === 'history') {
+        const historyModules = [
+          {
+            name: 'Manco Cápac, Mama Ocllo y el Imperio Inca',
+            slides: [
+              {
+                title: '1. El Lago Titicaca y los Hijos del Sol',
+                artHTML: renderInternetImageCard(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Lago_Titicaca_Peru.jpg/960px-Lago_Titicaca_Peru.jpg',
+                  'Lago Titicaca en Puno, Perú',
+                  'Lago Titicaca (Puno): Cuna de la leyenda de Manco Cápac y Mama Ocllo',
+                  'bg-sky-950'
+                ),
+                shortText: 'Según la leyenda inca, el Dios Sol (Inti) envió a sus hijos Manco Cápac y Mama Ocllo desde las islas del Lago Titicaca con una vara de oro.',
+                voiceText: 'Mira esta fotografía real del Lago Titicaca en el Perú. Cuenta la leyenda que de estas aguas salieron Manco Cápac y Mama Ocllo enviados por el Dios Sol con una vara de oro.'
+              },
+              {
+                title: '2. El Valle del Cusco y Machu Picchu',
+                artHTML: renderInternetImageCard(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Machu_Picchu%2C_Peru.jpg/960px-Machu_Picchu%2C_Peru.jpg',
+                  'Ciudadela Inca en el Cusco',
+                  'Cusco: Allí donde se hundió la vara de oro fundaron el Imperio del Tahuantinsuyo',
+                  'bg-emerald-950'
+                ),
+                shortText: 'La vara de oro se hundió en la tierra fértil del Cusco. Allí fundaron el Tahuantinsuyo y construyeron maravillas de piedra como Machu Picchu.',
+                voiceText: 'Observa las increíbles construcciones de piedra en el Cusco. Allí donde la vara de oro se hundió en la tierra fértil, los Incas levantaron la capital del gran Imperio del Tahuantinsuyo.'
+              },
+              {
+                title: '3. Las Enseñanzas de Mama Ocllo y Manco Cápac',
+                artHTML: renderInternetImageCard(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Taquile_weaver.jpg/800px-Taquile_weaver.jpg',
+                  'Arte Textil Andino del Perú',
+                  'Mama Ocllo enseñó el arte del tejido fino y Manco Cápac la agricultura en andenes',
+                  'bg-amber-950'
+                ),
+                shortText: 'Mama Ocllo fue la gran maestra que enseñó a tejer prendas con lana de alpaca y vicuña, mientras Manco Cápac enseñó a cultivar maíz y papa.',
+                voiceText: 'Mira cómo se teje en los Andes. Mama Ocllo enseñó a las mujeres el arte de hilar y tejer mantos abrigadores, y Manco Cápac enseñó a los hombres a sembrar en andenes.'
+              }
+            ],
+            challenges: [
+              {
+                stepTitle: 'Reto 1 de 2 (Razonamiento): ¿Por qué el Dios Sol les pidió buscar dónde se hundiera la vara de oro?',
+                voice: 'Primera pregunta para pensar: ¿Por qué crees que el Dios Sol les pidió construir la ciudad justo donde la vara se hundiera fácilmente en la tierra?',
+                options: [
+                  { text: 'Porque si la vara se hundía fácil, significaba que la tierra era suave y fértil para sembrar alimentos', ok: true, why: '¡Excelente deducción! Necesitaban tierra fértil para alimentar a todo el imperio.' },
+                  { text: 'Porque querían esconder la vara bajo tierra para que nadie nunca más la encontrara', ok: false, why: '¡Piénsalo bien! No querían perder la vara, buscaban buena tierra para sembrar maíz y papas.' },
+                  { text: 'Porque buscaban arena seca del desierto donde no crecieran plantas', ok: false, why: 'En el desierto sin agua no habrían podido cosechar alimentos para su pueblo.' }
+                ]
+              },
+              {
+                stepTitle: 'Reto 2 de 2 (Misión Práctica): Una familia inca tiene frío en la montaña. ¿A quién debe acudir y qué recurso usarán?',
+                voice: 'Segunda misión: Si una familia del imperio necesitaba aprender a hacer ropa abrigadora en las montañas, ¿quién les enseñaba y con qué material?',
+                options: [
+                  { text: 'A Mama Ocllo, para aprender a tejer con lana de alpaca y vicuña', ok: true, why: '¡Correcto! Mama Ocllo fue la gran maestra del tejido andino.' },
+                  { text: 'A Manco Cápac, para fabricar casacas de plástico con máquinas eléctricas', ok: false, why: 'En el Imperio Inca no existía el plástico ni la electricidad; tejían con lana natural.' },
+                  { text: 'Al pescador de la costa, para abrigarse con redes de pescar', ok: false, why: 'Las redes sirven para pescar en el mar, no para abrigarse del frío de los Andes.' }
+                ]
+              }
+            ]
+          },
+          {
+            name: 'José Olaya y Don José de San Martín (Héroes de la Libertad)',
+            slides: [
+              {
+                title: '1. José Olaya: El Nadador Patriota de Chorrillos',
+                artHTML: renderInternetImageCard(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Jose_Olaya_por_Gil_de_Castro.jpg/600px-Jose_Olaya_por_Gil_de_Castro.jpg',
+                  'Retrato Histórico de José Olaya',
+                  'Retrato histórico de José Olaya Balandra, héroe pescador de Chorrillos',
+                  'bg-slate-900'
+                ),
+                shortText: 'Este es el retrato real de José Olaya. Era pescador en Chorrillos y nadaba de noche entre el Callao y Lima llevando cartas secretas para la libertad del Perú.',
+                voiceText: 'Mira el retrato histórico de José Olaya. Él era un valiente pescador de Chorrillos que cruzaba el mar nadando de noche para llevar mensajes secretos de los patriotas.'
+              },
+              {
+                title: '2. Don José de San Martín y la Proclamación',
+                artHTML: renderInternetImageCard(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Proclamaci%C3%B3n_de_la_Independencia_del_Per%C3%BA%2C_por_Juan_Lepiani.jpg/960px-Proclamaci%C3%B3n_de_la_Independencia_del_Per%C3%BA%2C_por_Juan_Lepiani.jpg',
+                  'Proclamación de la Independencia del Perú',
+                  'Don José de San Martín proclamando la Independencia el 28 de julio de 1821',
+                  'bg-rose-950'
+                ),
+                shortText: 'En esta pintura histórica vemos a Don José de San Martín el 28 de julio de 1821 en la Plaza de Lima proclamando la Independencia del Perú.',
+                voiceText: 'Observa esta famosa pintura histórica. Es Don José de San Martín en el balcón de Lima el 28 de julio de 1821 proclamando la Independencia con la bandera roja y blanca.'
+              },
+              {
+                title: '3. Túpac Amaru II y Ramón Castilla',
+                artHTML: renderInternetImageCard(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ramon_Castilla_Marquesado.jpg/600px-Ramon_Castilla_Marquesado.jpg',
+                  'Gran Mariscal Ramón Castilla',
+                  'Ramón Castilla abolió la esclavitud y modernizó el Perú tras la lucha de los precursores',
+                  'bg-indigo-950'
+                ),
+                shortText: 'Antes de la Independencia luchó Túpac Amaru II en el Cusco (1780), y ya en la República el presidente Ramón Castilla abolió la esclavitud y trajo el primer ferrocarril.',
+                voiceText: 'Aquí vemos al presidente Ramón Castilla, quien años después dio libertad a los esclavos y construyó el primer tren Lima-Callao, cumpliendo el sueño de justicia que inició Túpac Amaru Segundo.'
+              }
+            ],
+            challenges: [
+              {
+                stepTitle: 'Reto 1 de 2 (Piensa y Decide): ¿Por qué José Olaya llevaba las cartas nadando por el mar de noche y no caminando por la carretera?',
+                voice: 'Piensa como estratega: ¿Por qué José Olaya prefería nadar por el mar helado de noche en lugar de ir caminando por la calle entre el Callao y Lima?',
+                options: [
+                  { text: 'Porque los caminos por tierra estaban vigilados por el ejército realista y en el mar podía pasar sin ser descubierto', ok: true, why: '¡Brillante análisis! Como pescador experto, el mar era su ruta secreta.' },
+                  { text: 'Porque aún no se habían inventado los zapatos para caminar', ok: false, why: 'Sí existían zapatos y caballos, pero los caminos estaban vigilados por los enemigos.' },
+                  { text: 'Porque quería atrapar peces de colores mientras leía las cartas bajo el agua', ok: false, why: 'Era una misión secreta muy peligrosa para salvar a los patriotas.' }
+                ]
+              },
+              {
+                stepTitle: 'Reto 2 de 2 (Caza al Impostor Histórico): ¿Cuál de estas acciones fue obra del presidente Ramón Castilla?',
+                voice: 'Segunda misión: Descubre cuál de estas grandes obras realizó el presidente Ramón Castilla por el Perú.',
+                options: [
+                  { text: 'Firmó la libertad de los esclavos y construyó el primer tren entre Lima y el Callao', ok: true, why: '¡Exacto! Ramón Castilla abolió la esclavitud en 1854 y modernizó el Perú con el ferrocarril.' },
+                  { text: 'Hundió la vara de oro en el Lago Titicaca junto a Mama Ocllo', ok: false, why: 'Eso pertenece a la leyenda inca de Manco Cápac, muchos siglos antes.' },
+                  { text: 'Viajó en avión desde España para tomar fotografías con celular', ok: false, why: '¡Impostor detectado! En el siglo XIX no existían aviones ni celulares.' }
+                ]
+              }
+            ]
+          }
+        ];
+
+        const mod = historyModules[(level - 1) % historyModules.length];
+        return {
+          id: `hist_${level}`,
+          subject: 'history',
+          points: 5,
+          title: `Historia Nivel ${level}: ${mod.name}`,
+          slides: mod.slides,
+          gameType: 'detective_stages',
+          challenges: mod.challenges
+        };
+      }
+
+      // -----------------------------------------------------------------------
+      // CURSO 3: COMPRENSIÓN LECTORA (+5 PUNTOS) - CON IMÁGENES REALES Y RETOS DE DEDUCCIÓN
+      // -----------------------------------------------------------------------
+      const readingModules = [
+        {
+          name: 'El Cóndor de los Andes y la Tormenta de Nieve',
+          slides: [
+            {
+              title: '1. El Vuelo Solitario de Kuntur',
+              artHTML: renderInternetImageCard(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Vultur_gryphus_-Colca_Canyon%2C_Peru-8.jpg/960px-Vultur_gryphus_-Colca_Canyon%2C_Peru-8.jpg',
+                'Cóndor Andino en el Cañón del Colca',
+                'Kuntur, el cóndor joven que volaba sobre el Cañón del Colca',
+                'bg-sky-950'
+              ),
+              shortText: 'En el profundo Cañón del Colca vivía Kuntur, un cóndor joven de alas gigantes. Él pensaba que por ser tan grande nunca necesitaría la ayuda de las aves pequeñas.',
+              voiceText: 'Observa la fotografía del cóndor en el Cañón del Colca. En nuestro cuento, Kuntur era un cóndor joven que creía que por tener alas gigantes nunca necesitaría la ayuda de nadie.'
+            },
+            {
+              title: '2. El Peligro entre la Neblina',
+              artHTML: renderInternetImageCard(
+                'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80',
+                'Montañas de los Andes con Neblina',
+                'Una espesa neblina cubrió las rocas y Kuntur perdió de vista su nido',
+                'bg-slate-900'
+              ),
+              shortText: 'Una tarde, una neblina muy espesa tapó las montañas. Kuntur no podía ver las rocas filosas, pero un pequeño picaflor andino zumbó cerca de él y lo guio hasta su cueva.',
+              voiceText: 'De pronto, una neblina espesa cubrió las montañas y Kuntur no podía ver las rocas. Entonces, un pequeño picaflor voló delante de él haciendo sonar sus alitas para guiarlo a salvo.'
+            },
+            {
+              title: '3. El Pacto de los Amigos de la Montaña',
+              artHTML: renderInternetImageCard(
+                'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80',
+                'Amanecer en la Cordillera',
+                'Desde ese día, Kuntur protegió del viento frío a los picaflores con sus grandes alas',
+                'bg-amber-950'
+              ),
+              shortText: 'Agradecido por haber sido salvado, Kuntur dejó de ser orgulloso y usó sus enormes alas como escudo para abrigar al picaflor cuando soplaba el viento helado.',
+              voiceText: 'Al llegar a salvo, Kuntur comprendió su error. Desde aquel día usó sus grandes alas como un escudo para proteger del viento helado a su amigo el picaflor.'
+            }
+          ],
+          challenges: [
+            {
+              stepTitle: 'Reto Lector 1 de 2 (Inferencia): ¿Cómo logró Kuntur seguir al picaflor si la neblina no dejaba ver bien?',
+              voice: 'Pregunta de detective lector: Si la neblina era tan espesa que casi no se veía, ¿cómo pudo Kuntur seguir al pequeño picaflor?',
+              options: [
+                { text: 'Escuchando el zumbido rápido de las alitas del picaflor que iba justo delante de él', ok: true, why: '¡Qué gran comprensión lectora! Recordaste el detalle del sonido de sus alitas.' },
+                { text: 'Porque el picaflor llevaba una linterna eléctrica de baterías en el pico', ok: false, why: 'Las aves del campo no usan linternas eléctricas.' },
+                { text: 'Porque Kuntur tomó un taxi hasta llegar a su nido', ok: false, why: 'Kuntur iba volando entre las montañas.' }
+              ]
+            },
+            {
+              stepTitle: 'Reto Lector 2 de 2 (Enseñanza del Cuento): ¿Cómo cambió la actitud de Kuntur al final de la historia?',
+              voice: 'Segunda pregunta: ¿Qué cambio importante ocurrió en el corazón de Kuntur al final del cuento?',
+              options: [
+                { text: 'Dejó de ser orgulloso y aprendió que hasta el más grande puede necesitar ayuda y ayudar a los pequeños', ok: true, why: '¡Excelente reflexión! Comprendiste el mensaje principal de la lectura.' },
+                { text: 'Se volvió más egoísta y nunca más volvió a hablar con las aves de la montaña', ok: false, why: 'Al contrario, agradeció al picaflor y lo abrigó con sus alas.' },
+                { text: 'Decidió dejar de volar para siempre y convertirse en pez', ok: false, why: 'Kuntur siguió siendo el gran cóndor de los Andes, pero ahora humilde y solidario.' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'El Secreto de las Llamitas y el Puente Antiguo',
+          slides: [
+            {
+              title: '1. La Caravana de las Llamas en el Cusco',
+              artHTML: renderInternetImageCard(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Llama_standing_in_Machu_Picchu.jpg/960px-Llama_standing_in_Machu_Picchu.jpg',
+                'Llama en los Andes del Perú',
+                'Wayra, la llama guía que observaba el clima antes de cruzar el valle',
+                'bg-emerald-950'
+              ),
+              shortText: 'Wayra era la llama líder de una caravana que llevaba sacos de papa hacia un pueblo del Cusco. Ella siempre olfateaba el viento antes de cruzar cualquier río.',
+              voiceText: 'Mira la fotografía de esta llama en los Andes. En nuestra historia, Wayra era una llama muy observadora que llevaba sacos de papa y siempre miraba el cielo antes de cruzar el río.'
+            },
+            {
+              title: '2. La Pista del Río Crecido',
+              artHTML: renderInternetImageCard(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Q%27eswachaka_bridge.jpg/960px-Q%27eswachaka_bridge.jpg',
+                'Puente Inca de Q’eswachaka',
+                'En lugar de cruzar por las piedras bajas, Wayra eligió el puente colgante alto',
+                'bg-amber-950'
+              ),
+              shortText: 'Al ver que caían hojas y ramas por el agua turbia, Wayra supo que arriba en la montaña había llovido fuerte. Por eso detuvo al grupo y los llevó por el puente colgante alto.',
+              voiceText: 'Observa este puente colgante real en el Cusco. Cuando Wayra vio que el agua traía ramas y espuma, dedujo que el río iba a crecer rápido y guio a todos por el puente alto.'
+            },
+            {
+              title: '3. Una Decisión que Salvó la Cosecha',
+              artHTML: renderInternetImageCard(
+                'https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=900&q=80',
+                'Andes Peruanos Soleados',
+                'Gracias a la observación de Wayra, toda la comida llegó seca y segura al pueblo',
+                'bg-sky-950'
+              ),
+              shortText: 'Cinco minutos después, el río tapó las piedras de abajo, pero las llamas ya habían cruzado seguras por arriba. ¡Observar la naturaleza salvó los alimentos!',
+              voiceText: 'Pocos minutos después, el río creció y tapó las piedras bajas, pero toda la caravana ya estaba a salvo al otro lado gracias a la inteligencia de Wayra.'
+            }
+          ],
+          challenges: [
+            {
+              stepTitle: 'Reto Lector 1 de 2 (Pista Clave): ¿Qué señal vio Wayra para darse cuenta de que el río iba a crecer?',
+              voice: 'Primera pregunta de detective: ¿Qué pista vio Wayra en el río que le avisó del peligro antes de tiempo?',
+              options: [
+                { text: 'Vio que el agua venía turbia arrastrando hojas y ramas desde la montaña', ok: true, why: '¡Exacto! Esa señal indicaba que había llovido fuerte río arriba.' },
+                { text: 'Escuchó las noticias en una radio portátil que llevaba en su mochila', ok: false, why: 'Wayra no tenía radio; observó las pistas de la naturaleza.' },
+                { text: 'Vio un letrero luminoso de neón en medio de las rocas', ok: false, why: 'En el campo andino no había letreros de neón; ella observó el agua del río.' }
+              ]
+            },
+            {
+              stepTitle: 'Reto Lector 2 de 2 (Causa y Consecuencia): ¿Qué habría pasado si las llamas cruzaban por las piedras de abajo?',
+              voice: 'Segunda pregunta: ¿Qué habría ocurrido si no le hacían caso a Wayra y cruzaban por las piedras bajas?',
+              options: [
+                { text: 'La crecida del río habría mojado y arrastrado los sacos de papa del pueblo', ok: true, why: '¡Muy bien pensado! El puente colgante alto permitió cruzar sin peligro.' },
+                { text: 'Habrían encontrado un centro comercial debajo del agua', ok: false, why: 'Debajo del río solo había corriente fuerte.' },
+                { text: 'Los sacos de papa se habrían convertido en barras de oro mágico', ok: false, why: 'El agua habría malogrado la cosecha de papas.' }
+              ]
+            }
+          ]
+        }
+      ];
+
+      const rMod = readingModules[(level - 1) % readingModules.length];
+      return {
+        id: `read_${level}`,
+        subject: 'reading',
+        points: 5,
+        title: `Lectura Nivel ${level}: ${rMod.name}`,
+        slides: rMod.slides,
+        gameType: 'detective_stages',
+        challenges: rMod.challenges
+      };
+    }
+
+    // =========================================================================
+    // 4. CONTROL DE PANTALLAS Y MENÚ
+    // =========================================================================
+    let activeLesson = null;
+    let currentSlideIdx = 0;
+    let mistakesCount = 0;
+
+    function chooseProfile(profileKey) {
+      appState.profile = profileKey;
+      const player = appState.players[profileKey];
+
+      document.getElementById('viewProfiles').classList.add('hidden');
+      document.getElementById('viewLesson').classList.add('hidden');
+      document.getElementById('viewDashboard').classList.remove('hidden');
+      document.getElementById('topStatsBar').classList.remove('hidden');
+      document.getElementById('headerPlayerName').innerText = `Jugando: ${player.name}`;
+
+      refreshHeaderStats();
+      selectSubject('history'); // Mostramos primero Historia o el curso que elija
+      renderStoreAndTickets();
+
+      speak(`¡Hola ${player.name}! Ahora tus cursos tienen fotografías e ilustraciones reales mientras te hablo, y juegos nuevos donde tú demostrarás tu ingenio.`);
+    }
+
+    function goHomeProfiles() {
+      document.getElementById('viewDashboard').classList.add('hidden');
+      document.getElementById('viewLesson').classList.add('hidden');
+      document.getElementById('topStatsBar').classList.add('hidden');
+      document.getElementById('viewProfiles').classList.remove('hidden');
+      speak("Elige quién va a jugar ahora.");
+    }
+
+    function refreshHeaderStats() {
+      const p = appState.players[appState.profile];
+      document.getElementById('uiPoints').innerText = p.points;
+      document.getElementById('uiStars').innerText = p.stars;
+      const avg = Math.round(p.grades.reduce((a,b) => a+b, 0) / p.grades.length);
+      document.getElementById('uiGrade').innerText = avg;
+      document.getElementById('badgeTicketCount').innerText = p.tickets.length;
+    }
+
+    function switchMainTab(tab) {
+      if (tab === 'courses') {
+        document.getElementById('panelCourses').classList.remove('hidden');
+        document.getElementById('panelRewards').classList.add('hidden');
+      } else {
+        document.getElementById('panelCourses').classList.add('hidden');
+        document.getElementById('panelRewards').classList.remove('hidden');
+        renderStoreAndTickets();
+        speak("Aquí puedes canjear tus puntos por un Ticket Dorado para papá o mamá.");
+      }
+    }
+
+    function selectSubject(subKey) {
+      appState.subject = subKey;
+      ['math', 'history', 'reading'].forEach(k => {
+        const el = document.getElementById(`cardSub_${k}`);
+        if (k === subKey) el.classList.add('ring-4', 'ring-indigo-500', 'scale-[1.02]');
+        else el.classList.remove('ring-4', 'ring-indigo-500', 'scale-[1.02]');
+      });
+
+      const titles = {
+        math: '🧮 200 Niveles de Matemáticas: Retos de Compras, Cálculo y Vuelto (+10 Pts)',
+        history: '🏔️ 200 Niveles de Historia del Perú con Imágenes Reales (+5 Pts)',
+        reading: '📖 200 Niveles de Comprensión Lectora Ilustrada (+5 Pts)'
+      };
+      document.getElementById('levelMapTitle').innerText = titles[subKey];
+      renderLevelButtons();
+    }
+
+    function changePage(start, end) {
+      appState.pageRange = [start, end];
+      renderLevelButtons();
+    }
+
+    function renderLevelButtons() {
+      const p = appState.players[appState.profile];
+      const prefix = appState.subject === 'reading' ? 'read' : (appState.subject === 'history' ? 'hist' : 'math');
+      const pts = appState.subject === 'math' ? '+10 🪙' : '+5 🪙';
+      const [start, end] = appState.pageRange;
+
+      let html = '';
+      for (let i = start; i <= end; i++) {
+        const id = `${prefix}_${i}`;
+        const done = !!p.done[id];
+        html += `
+          <button onclick="startLevel(${i})" class="toy-btn rounded-2xl py-3 px-2 font-extrabold flex flex-col items-center justify-center ${
+            done ? 'toy-btn-green' : 'toy-btn-blue'
+          }">
+            <span class="text-base">Nivel ${i}</span>
+            <span class="text-xs opacity-95">${done ? '⭐ Listo' : pts}</span>
+          </button>
+        `;
+      }
+      document.getElementById('levelsButtonsGrid').innerHTML = html;
+    }
+
+    // =========================================================================
+    // 5. REPRODUCCIÓN DE ESCENAS CON IMÁGENES SINCRONIZADAS CON LA VOZ
+    // =========================================================================
+    function startLevel(levelNum) {
+      activeLesson = buildLesson(appState.profile, appState.subject, levelNum);
+      currentSlideIdx = 0;
+      mistakesCount = 0;
+
+      document.getElementById('viewDashboard').classList.add('hidden');
+      document.getElementById('viewLesson').classList.remove('hidden');
+      document.getElementById('stepStoryBox').classList.remove('hidden');
+      document.getElementById('stepGameBox').classList.add('hidden');
+
+      document.getElementById('lessonBadge').innerText = `Premio: +${activeLesson.points} Puntos 🪙`;
+      document.getElementById('lessonMainTitle').innerText = activeLesson.title;
+
+      showCurrentSlide();
+    }
+
+    function showCurrentSlide() {
+      const slide = activeLesson.slides[currentSlideIdx];
+      const stage = document.getElementById('bigPictureStage');
+
+      [0, 1, 2].forEach(i => {
+        const dot = document.getElementById(`dotStep${i}`);
+        dot.className = i === currentSlideIdx
+          ? 'px-5 py-2 rounded-full font-extrabold text-sm bg-sky-500 text-white shadow'
+          : 'px-4 py-1.5 rounded-full font-extrabold text-sm bg-slate-200 text-slate-600';
+      });
+
+      stage.innerHTML = `
+        <h3 class="text-xl md:text-2xl font-bold text-sky-900">${slide.title}</h3>
+        ${slide.artHTML}
+        <p class="text-lg md:text-xl font-extrabold text-slate-800 max-w-2xl mx-auto mt-2 bg-white p-4 rounded-2xl border-2 border-sky-200 shadow-sm">
+          ${slide.shortText}
+        </p>
+      `;
+
+      document.getElementById('btnPrevStep').style.visibility = currentSlideIdx === 0 ? 'hidden' : 'visible';
+      const nextBtn = document.getElementById('btnNextStep');
+      if (currentSlideIdx === 2) {
+        nextBtn.innerText = '🧠 ¡IR AL RETO DE PENSAR!';
+        nextBtn.className = 'toy-btn toy-btn-yellow px-10 py-4 rounded-2xl font-extrabold text-xl';
+      } else {
+        nextBtn.innerText = 'Siguiente Escena ➡️';
+        nextBtn.className = 'toy-btn toy-btn-green px-10 py-4 rounded-2xl font-extrabold text-xl';
+      }
+
+      speak(slide.voiceText);
+    }
+
+    function nextStoryStep() {
+      if (currentSlideIdx < 2) {
+        currentSlideIdx++;
+        showCurrentSlide();
+      } else {
+        openThinkingGame();
+      }
+    }
+
+    function prevStoryStep() {
+      if (currentSlideIdx > 0) {
+        currentSlideIdx--;
+        showCurrentSlide();
+      }
+    }
+
+    function exitLesson() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('viewLesson').classList.add('hidden');
+      document.getElementById('viewDashboard').classList.remove('hidden');
+      renderLevelButtons();
+    }
+
+    // =========================================================================
+    // 6. JUEGOS DE RAZONAMIENTO REAL (2 ETAPAS ENCADENADAS POR JUEGO)
+    // =========================================================================
+    let mathPhase = 1; // Fase 1: Calcular total sin ayuda | Fase 2: Calcular vuelto o reserva
+    let userCurrentInput = 0;
+    let detectiveStageIdx = 0;
+
+    function openThinkingGame() {
+      document.getElementById('stepStoryBox').classList.add('hidden');
+      document.getElementById('stepGameBox').classList.remove('hidden');
+      document.getElementById('gameFeedbackBanner').classList.add('hidden');
+      document.getElementById('liveGradeBadge').innerText = 'Tu Nota: 20 / 20';
+
+      if (activeLesson.gameType === 'smart_cashier_7') {
+        mathPhase = 1;
+        userCurrentInput = 0;
+        renderSmartCashier7();
+      } else if (activeLesson.gameType === 'smart_architect_9') {
+        mathPhase = 1;
+        userCurrentInput = 0;
+        renderSmartArchitect9();
+      } else {
+        detectiveStageIdx = 0;
+        renderDetectiveStage();
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // JUEGO MATEMÁTICAS 7 AÑOS: CAJERO INTELIGENTE (SIN SOPLAR LA RESPUESTA)
+    // -------------------------------------------------------------------------
+    function renderSmartCashier7() {
+      const area = document.getElementById('interactivePlayArea');
+      document.getElementById('stageStepIndicator').innerText = `Paso ${mathPhase} de 2`;
+
+      if (mathPhase === 1) {
+        document.getElementById('gameInstructionTitle').innerText = '🛒 Paso 1: Suma tú mismo los 2 precios y marca cuánto debes cobrar';
+        if (userCurrentInput === 0) {
+          speak(`Paso uno en la tienda: el cliente lleva un ${activeLesson.item1Name} de ${activeLesson.item1Price} soles y una ${activeLesson.item2Name} de ${activeLesson.item2Price} soles. Súmalos en tu mente y marca el total en la caja registradora.`);
+        }
+
+        area.innerHTML = `
+          <div class="space-y-6 text-center">
+            <!-- Productos en el mostrador (NO dice el total, el niño debe sumarlos) -->
+            <div class="grid sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+              <div class="bg-white p-4 rounded-3xl border-4 border-sky-400 shadow">
+                <div class="text-5xl">🦙</div>
+                <div class="font-extrabold text-slate-700 mt-1">${activeLesson.item1Name}</div>
+                <div class="bg-sky-100 text-sky-900 font-extrabold text-2xl py-1 px-4 rounded-xl inline-block mt-2">
+                  Precio: S/ ${activeLesson.item1Price}
+                </div>
+              </div>
+              <div class="bg-white p-4 rounded-3xl border-4 border-emerald-400 shadow">
+                <div class="text-5xl">⚽</div>
+                <div class="font-extrabold text-slate-700 mt-1">${activeLesson.item2Name}</div>
+                <div class="bg-emerald-100 text-emerald-900 font-extrabold text-2xl py-1 px-4 rounded-xl inline-block mt-2">
+                  Precio: S/ ${activeLesson.item2Price}
+                </div>
+              </div>
+            </div>
+
+            <!-- Pantalla de la Caja Registradora -->
+            <div class="bg-slate-900 text-amber-300 p-5 rounded-3xl border-4 border-slate-700 max-w-md mx-auto">
+              <div class="text-xs uppercase text-slate-400 font-extrabold">Total que vas a cobrar (S/ ??):</div>
+              <div class="text-5xl font-extrabold mt-1">S/ ${userCurrentInput}</div>
+            </div>
+
+            <!-- Billetes y Monedas para armar el cobro -->
+            <div class="flex flex-wrap justify-center gap-3">
+              <button onclick="changeMathInput(10)" class="toy-btn toy-btn-blue px-6 py-3.5 rounded-2xl font-extrabold text-lg">💵 +10 Soles</button>
+              <button onclick="changeMathInput(5)" class="toy-btn toy-btn-purple px-6 py-3.5 rounded-2xl font-extrabold text-lg">🪙 +5 Soles</button>
+              <button onclick="changeMathInput(1)" class="toy-btn toy-btn-yellow px-6 py-3.5 rounded-2xl font-extrabold text-lg">🪙 +1 Sol</button>
+              <button onclick="changeMathInput(-1)" class="toy-btn bg-rose-500 text-white px-5 py-3.5 rounded-2xl font-extrabold text-base">➖ Quitar 1</button>
+              <button onclick="resetMathInput()" class="toy-btn bg-slate-300 text-slate-800 px-5 py-3.5 rounded-2xl font-extrabold text-base">🗑️ Borrar</button>
+            </div>
+
+            <button onclick="verifyCashierStep1()" class="toy-btn toy-btn-green px-10 py-4 rounded-2xl font-extrabold text-xl">
+              ✅ Cobrar este Monto
+            </button>
+          </div>
+        `;
+      } else {
+        // FASE 2: EL CLIENTE PAGA CON UN BILLETE MÁS GRANDE Y EL NIÑO DEBE DAR EL VUELTO
+        document.getElementById('gameInstructionTitle').innerText = '🪙 Paso 2: ¡Calcula y entrega el VUELTO exacto al cliente!';
+        area.innerHTML = `
+          <div class="space-y-6 text-center">
+            <div class="bg-white p-5 rounded-3xl border-4 border-amber-400 max-w-xl mx-auto shadow">
+              <p class="text-lg font-extrabold text-slate-700">
+                ¡Muy bien! La cuenta total era <span class="text-sky-600 text-2xl">S/ ${activeLesson.secretTotalCost}</span>.
+              </p>
+              <p class="text-xl font-extrabold text-emerald-700 mt-2">
+                💵 Pero el cliente te paga con <span class="underline">S/ ${activeLesson.billPaid}</span>.
+              </p>
+              <p class="text-base font-bold text-slate-500 mt-1">
+                ¿Cuántos soles de VUELTO le debes entregar? (De ${activeLesson.secretTotalCost} para llegar a ${activeLesson.billPaid})
+              </p>
+            </div>
+
+            <div class="bg-slate-900 text-emerald-300 p-5 rounded-3xl border-4 border-slate-700 max-w-md mx-auto">
+              <div class="text-xs uppercase text-slate-400 font-extrabold">Vuelto en tu mano:</div>
+              <div class="text-5xl font-extrabold mt-1">S/ ${userCurrentInput}</div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3">
+              <button onclick="changeMathInput(5)" class="toy-btn toy-btn-purple px-6 py-3.5 rounded-2xl font-extrabold text-lg">🪙 +5 Soles</button>
+              <button onclick="changeMathInput(2)" class="toy-btn toy-btn-blue px-6 py-3.5 rounded-2xl font-extrabold text-lg">🪙 +2 Soles</button>
+              <button onclick="changeMathInput(1)" class="toy-btn toy-btn-yellow px-6 py-3.5 rounded-2xl font-extrabold text-lg">🪙 +1 Sol</button>
+              <button onclick="resetMathInput()" class="toy-btn bg-slate-300 text-slate-800 px-5 py-3.5 rounded-2xl font-extrabold text-base">🗑️ Borrar</button>
+            </div>
+
+            <button onclick="verifyCashierStep2()" class="toy-btn toy-btn-green px-10 py-4 rounded-2xl font-extrabold text-xl">
+              🎉 Entregar Vuelto al Cliente
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function changeMathInput(delta) {
+      userCurrentInput = Math.max(0, userCurrentInput + delta);
+      if (activeLesson.gameType === 'smart_cashier_7') renderSmartCashier7();
+      else renderSmartArchitect9();
+    }
+
+    function resetMathInput() {
+      userCurrentInput = 0;
+      if (activeLesson.gameType === 'smart_cashier_7') renderSmartCashier7();
+      else renderSmartArchitect9();
+    }
+
+    function verifyCashierStep1() {
+      if (userCurrentInput === activeLesson.secretTotalCost) {
+        mathPhase = 2;
+        userCurrentInput = 0;
+        document.getElementById('gameFeedbackBanner').classList.add('hidden');
+        renderSmartCashier7();
+        speak(`¡Suma perfecta! La compra cuesta ${activeLesson.secretTotalCost} soles. Ahora el cliente te entrega ${activeLesson.billPaid} soles. Calcula cuánto vuelto debes darle.`);
+      } else {
+        failAttempt(`Revisemos tu suma: junta las decenas y unidades de ${activeLesson.item1Price} más ${activeLesson.item2Price}. Marcado actual: ${userCurrentInput}.`);
+      }
+    }
+
+    function verifyCashierStep2() {
+      if (userCurrentInput === activeLesson.secretChange) {
+        winCurrentLevel(`¡Cajero Maestro! Calculaste tú solito la suma de S/ ${activeLesson.secretTotalCost} y entregaste los S/ ${activeLesson.secretChange} de vuelto exacto.`);
+      } else {
+        failAttempt(`Piensa: si la cuenta es ${activeLesson.secretTotalCost} y te pagan con ${activeLesson.billPaid}, cuenta con tus dedos cuánto falta de ${activeLesson.secretTotalCost} para llegar a ${activeLesson.billPaid}.`);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // JUEGO MATEMÁTICAS 9 AÑOS: ARQUITECTA EN 2 ETAPAS (SIN DAR EL RESULTADO)
+    // -------------------------------------------------------------------------
+    function renderSmartArchitect9() {
+      const area = document.getElementById('interactivePlayArea');
+      document.getElementById('stageStepIndicator').innerText = `Etapa ${mathPhase} de 2`;
+
+      if (mathPhase === 1) {
+        document.getElementById('gameInstructionTitle').innerText = `🏗️ Etapa 1: Calcula cuántos bloques hay en ${activeLesson.boxesA} camiones de ${activeLesson.itemsPerBoxA} bloques c/u`;
+        if (userCurrentInput === 0) {
+          speak(`Etapa uno de ingeniería: llegaron ${activeLesson.boxesA} camiones iguales, y cada camión trae ${activeLesson.itemsPerBoxA} bloques. Multiplica en tu mente y carga esa cantidad exacta.`);
+        }
+
+        area.innerHTML = `
+          <div class="space-y-6 text-center">
+            <div class="flex flex-wrap justify-center gap-3">
+              ${Array.from({length: activeLesson.boxesA}).map((_, i) => `
+                <div class="bg-white p-4 rounded-2xl border-4 border-purple-400 shadow">
+                  <div class="text-4xl">🚚🧱</div>
+                  <div class="font-extrabold text-purple-900 text-sm mt-1">Camión #${i+1}</div>
+                  <div class="bg-purple-100 text-purple-900 font-extrabold px-3 py-0.5 rounded-full text-sm mt-1">
+                    Trae ${activeLesson.itemsPerBoxA} bloques
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="bg-slate-900 text-sky-300 p-5 rounded-3xl border-4 border-slate-700 max-w-md mx-auto">
+              <div class="text-xs uppercase text-slate-400 font-extrabold">Tu cálculo para (${activeLesson.boxesA} × ${activeLesson.itemsPerBoxA}):</div>
+              <div class="text-5xl font-extrabold mt-1">${userCurrentInput} bloques</div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3">
+              <button onclick="changeMathInput(10)" class="toy-btn toy-btn-purple px-6 py-3.5 rounded-2xl font-extrabold text-lg">🧱 +10</button>
+              <button onclick="changeMathInput(5)" class="toy-btn toy-btn-blue px-6 py-3.5 rounded-2xl font-extrabold text-lg">🧱 +5</button>
+              <button onclick="changeMathInput(1)" class="toy-btn toy-btn-yellow px-6 py-3.5 rounded-2xl font-extrabold text-lg">🧱 +1</button>
+              <button onclick="changeMathInput(-1)" class="toy-btn bg-rose-500 text-white px-5 py-3.5 rounded-2xl font-extrabold text-base">➖ -1</button>
+              <button onclick="resetMathInput()" class="toy-btn bg-slate-300 text-slate-800 px-5 py-3.5 rounded-2xl font-extrabold text-base">🗑️ 0</button>
+            </div>
+
+            <button onclick="verifyArchitectStep1()" class="toy-btn toy-btn-green px-10 py-4 rounded-2xl font-extrabold text-xl">
+              ✅ Confirmar Multiplicación
+            </button>
+          </div>
+        `;
+      } else {
+        document.getElementById('gameInstructionTitle').innerText = `🏗️ Etapa 2: A tus ${activeLesson.secretPart1} bloques súmale la reserva de +${activeLesson.extraItems} bloques`;
+        area.innerHTML = `
+          <div class="space-y-6 text-center">
+            <div class="bg-white p-5 rounded-3xl border-4 border-emerald-400 max-w-xl mx-auto shadow">
+              <p class="text-lg font-extrabold text-slate-700">
+                ¡Multiplicación correcta! Tenías <span class="text-purple-700 text-2xl">${activeLesson.secretPart1} bloques</span> de los camiones.
+              </p>
+              <p class="text-xl font-extrabold text-amber-700 mt-2">
+                ➕ Ahora el maestro de obra te pide agregar <span class="underline">${activeLesson.extraItems} bloques extra</span> para el techo.
+              </p>
+              <p class="text-sm font-bold text-slate-500 mt-1">¿Cuántos bloques tendrá el edificio en total?</p>
+            </div>
+
+            <div class="bg-slate-900 text-amber-300 p-5 rounded-3xl border-4 border-slate-700 max-w-md mx-auto">
+              <div class="text-xs uppercase text-slate-400 font-extrabold">Total de la Obra (${activeLesson.secretPart1} + ${activeLesson.extraItems}):</div>
+              <div class="text-5xl font-extrabold mt-1">${userCurrentInput} bloques</div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3">
+              <button onclick="changeMathInput(10)" class="toy-btn toy-btn-purple px-6 py-3.5 rounded-2xl font-extrabold text-lg">🧱 +10</button>
+              <button onclick="changeMathInput(5)" class="toy-btn toy-btn-blue px-6 py-3.5 rounded-2xl font-extrabold text-lg">🧱 +5</button>
+              <button onclick="changeMathInput(1)" class="toy-btn toy-btn-yellow px-6 py-3.5 rounded-2xl font-extrabold text-lg">🧱 +1</button>
+              <button onclick="changeMathInput(-1)" class="toy-btn bg-rose-500 text-white px-5 py-3.5 rounded-2xl font-extrabold text-base">➖ -1</button>
+            </div>
+
+            <button onclick="verifyArchitectStep2()" class="toy-btn toy-btn-green px-10 py-4 rounded-2xl font-extrabold text-xl">
+              🏆 Terminar Construcción
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function verifyArchitectStep1() {
+      if (userCurrentInput === activeLesson.secretPart1) {
+        mathPhase = 2;
+        // Lo dejamos en secretPart1 para que razone cuánto agregar o calcule el total
+        userCurrentInput = 0;
+        document.getElementById('gameFeedbackBanner').classList.add('hidden');
+        renderSmartArchitect9();
+        speak(`¡Excelente! ${activeLesson.boxesA} por ${activeLesson.itemsPerBoxA} es ${activeLesson.secretPart1}. Ahora en la etapa dos súmale los ${activeLesson.extraItems} bloques extra y marca el total final.`);
+      } else {
+        failAttempt(`Multiplica con calma: tienes ${activeLesson.boxesA} grupos de ${activeLesson.itemsPerBoxA}. Puedes separar ${activeLesson.itemsPerBoxA} en 5 + ${activeLesson.itemsPerBoxA - 5}.`);
+      }
+    }
+
+    function verifyArchitectStep2() {
+      if (userCurrentInput === activeLesson.secretPart2) {
+        winCurrentLevel(`¡Ingeniera Brillante! Resolviste la multiplicación (${activeLesson.secretPart1}) y sumaste la reserva para llegar a ${activeLesson.secretPart2} sin ayuda.`);
+      } else {
+        failAttempt(`Suma en tu mente: tenías ${activeLesson.secretPart1} bloques y debes sumarle ${activeLesson.extraItems}.`);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // JUEGO HISTORIA Y LECTURA: MISIONES ENCADENADAS DE RAZONAMIENTO E IMPOSTOR
+    // -------------------------------------------------------------------------
+    let currentShuffledOptions = [];
+
+    function renderDetectiveStage() {
+      const ch = activeLesson.challenges[detectiveStageIdx];
+      document.getElementById('stageStepIndicator').innerText = `Misión ${detectiveStageIdx + 1} de ${activeLesson.challenges.length}`;
+      document.getElementById('gameInstructionTitle').innerText = ch.stepTitle;
+      document.getElementById('gameFeedbackBanner').classList.add('hidden');
+
+      currentShuffledOptions = [...ch.options].sort(() => Math.random() - 0.5);
+
+      const area = document.getElementById('interactivePlayArea');
+      area.innerHTML = `
+        <div class="space-y-4 max-w-2xl mx-auto">
+          <p class="text-sm font-extrabold uppercase text-sky-700 text-center">
+            🤔 Piensa bien cuál es la respuesta lógica y verdadera:
+          </p>
+          <div class="grid gap-4">
+            ${currentShuffledOptions.map((opt, idx) => `
+              <button onclick="pickDetectiveOption(${idx})" class="toy-btn bg-white hover:bg-sky-100 text-slate-800 border-4 border-sky-400 p-5 rounded-3xl font-extrabold text-lg text-left shadow flex items-center gap-4">
+                <span class="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center shrink-0">${idx + 1}</span>
+                <span>${opt.text}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      speak(ch.voice);
+    }
+
+    function pickDetectiveOption(idx) {
+      const chosen = currentShuffledOptions[idx];
+      if (chosen.ok) {
+        if (detectiveStageIdx + 1 < activeLesson.challenges.length) {
+          detectiveStageIdx++;
+          speak(`${chosen.why} ¡Ahora pasemos a la segunda misión!`);
+          setTimeout(() => renderDetectiveStage(), 1400);
+        } else {
+          winCurrentLevel(chosen.why);
+        }
+      } else {
+        failAttempt(chosen.why);
+      }
+    }
+
+    // =========================================================================
+    // 7. CALIFICACIÓN, PUNTOS Y TICKETS DORADOS
+    // =========================================================================
+    function failAttempt(hint) {
+      mistakesCount++;
+      const grade = Math.max(14, 20 - mistakesCount * 2);
+      document.getElementById('liveGradeBadge').innerText = `Tu Nota: ${grade} / 20`;
+
+      const banner = document.getElementById('gameFeedbackBanner');
+      banner.className = 'p-5 rounded-3xl text-center border-4 bg-rose-100 border-rose-400 text-rose-900 font-extrabold text-lg block pop-in';
+      banner.innerHTML = `💡 Pista para Pensar: ${hint}`;
+      speak(hint);
+    }
+
+    function winCurrentLevel(msg) {
+      const grade = Math.max(14, 20 - mistakesCount * 2);
+      const p = appState.players[appState.profile];
+      const pts = activeLesson.points; // +10 Matemáticas, +5 Historia/Lectura
+
+      p.points += pts;
+      p.stars += 1;
+      p.grades.push(grade);
+      p.done[activeLesson.id] = true;
+
+      saveProgress();
+      refreshHeaderStats();
+
+      const banner = document.getElementById('gameFeedbackBanner');
+      banner.className = 'p-6 rounded-3xl text-center border-4 bg-emerald-100 border-emerald-400 text-emerald-950 block pop-in';
+      banner.innerHTML = `
+        <div class="text-5xl mb-2">🎉🏆🎉</div>
+        <h3 class="text-2xl font-extrabold">¡Misión Superada Pensando! Nota: ${grade}/20</h3>
+        <p class="font-bold text-lg mt-1">${msg}</p>
+        <div class="my-3 inline-block bg-amber-300 text-amber-950 font-extrabold px-6 py-2 rounded-full text-xl border-2 border-amber-500">
+          Ganaste +${pts} Puntos 🪙
+        </div>
+        <div class="mt-3">
+          <button onclick="exitLesson()" class="toy-btn toy-btn-blue px-10 py-4 rounded-2xl font-extrabold text-xl">
+            ▶️ Volver al Mapa de Niveles
+          </button>
+        </div>
+      `;
+
+      speak(`${msg} ¡Felicitaciones! Obtuviste ${grade} de nota y ganaste ${pts} puntos.`);
+    }
+
+    const rewardsCatalog = [
+      { id: 't1', title: '🍿 Elegir la Película Familiar', cost: 40, icon: '🎬' },
+      { id: 't2', title: '🍦 Salida por mi Helado Favorito', cost: 60, icon: '🍨' },
+      { id: 't3', title: '🎮 30 Minutos Extra de Juego', cost: 50, icon: '🕹️' }
+    ];
+
+    function renderStoreAndTickets() {
+      const p = appState.players[appState.profile];
+      document.getElementById('storeGrid').innerHTML = rewardsCatalog.map(r => {
+        const canBuy = p.points >= r.cost;
+        return `
+          <div class="bg-white p-5 rounded-3xl border-4 border-amber-300 text-center flex flex-col justify-between shadow">
+            <div>
+              <div class="text-5xl mb-2">${r.icon}</div>
+              <h4 class="text-lg font-extrabold text-slate-800">${r.title}</h4>
+              <span class="inline-block mt-2 bg-amber-100 text-amber-900 font-extrabold px-3 py-1 rounded-full text-sm">
+                Cuesta: ${r.cost} Puntos 🪙
+              </span>
+            </div>
+            <button onclick="buyGoldenTicket('${r.id}')" ${!canBuy ? 'disabled' : ''} class="mt-4 w-full py-3 rounded-2xl font-extrabold text-base ${
+              canBuy ? 'toy-btn toy-btn-yellow' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+            }">
+              ${canBuy ? '🎫 ¡Canjear Ticket Dorado!' : `Te faltan ${r.cost - p.points} 🪙`}
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      const list = document.getElementById('ticketsList');
+      if (p.tickets.length === 0) {
+        list.innerHTML = `<p class="text-slate-500 font-bold col-span-2 text-center py-4">Aún no tienes Tickets Dorados. ¡Supera niveles pensando para ganar puntos!</p>`;
+      } else {
+        list.innerHTML = p.tickets.map(t => `
+          <div class="golden-ticket p-5 rounded-3xl text-amber-950">
+            <div class="flex justify-between items-center border-b-2 border-amber-700/30 pb-2 mb-2">
+              <span class="bg-amber-900 text-amber-100 font-extrabold text-xs px-3 py-1 rounded-full">🎫 TICKET DORADO DE PREMIO</span>
+              <span class="font-extrabold text-xs">#${t.code}</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-5xl">${t.icon}</span>
+              <div>
+                <h4 class="text-xl font-extrabold">${t.title}</h4>
+                <p class="text-xs font-extrabold">Ganado por: ${p.name} • Fecha: ${t.date}</p>
+              </div>
+            </div>
+            <div class="mt-3 bg-white/80 text-center py-1.5 rounded-xl font-extrabold text-xs text-amber-950">
+              👨‍👩‍👧‍👦 Muéstrale este Ticket Dorado a Papá o Mamá para reclamar tu premio
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function buyGoldenTicket(id) {
+      const p = appState.players[appState.profile];
+      const item = rewardsCatalog.find(r => r.id === id);
+      if (!item || p.points < item.cost) return;
+
+      p.points -= item.cost;
+      p.tickets.unshift({
+        code: Math.floor(1000 + Math.random() * 9000),
+        title: item.title,
+        icon: item.icon,
+        date: new Date().toLocaleDateString('es-PE')
+      });
+
+      saveProgress();
+      refreshHeaderStats();
+      renderStoreAndTickets();
+      speak(`¡Felicidades! Ganaste el Ticket Dorado para ${item.title}. Muéstraselo a papá o mamá.`);
+    }
+
+    window.addEventListener('DOMContentLoaded', loadProgress);
+  </script>
+</body>
+</html>
